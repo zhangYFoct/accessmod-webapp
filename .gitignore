@@ -36,3 +36,13 @@ build
 tsconfig.tsbuildinfo
 .ncurc.js
 backend/service-account-key.json
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Python virtual environment
+backend_env/
