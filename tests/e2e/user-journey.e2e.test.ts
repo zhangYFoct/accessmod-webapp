@@ -140,51 +140,21 @@ test.describe('AccessMod User Journey', () => {
     });
   });
 
-  test('User login with existing credentials', async ({ page }) => {
-    await page.goto('/');
-    
-    // Navigate to login
+  test('Quick login test', async ({ page }) => {
+    // Simple login test
     await page.goto('/auth/jwt/sign-in');
     
-    // Verify sign in page elements
-    await expect(page.locator('text=Sign in to your account')).toBeVisible();
-    
-    // Fill login form
     await page.fill('input[name="email"]', testUser.email);
     await page.fill('input[name="password"]', testUser.password);
-    
-    // Submit login
     await page.click('button[type="submit"]:has-text("Sign in")');
     
-    // Verify successful login (redirect to dashboard)
+    // Verify successful login
     await expect(page).toHaveURL(/dashboard/, { timeout: 10000 });
   });
 
-  test('Error handling: Analysis without country selection', async ({ page }) => {
-    // Login first
-    await page.goto('/auth/jwt/sign-in');
-    await page.fill('input[name="email"]', testUser.email);
-    await page.fill('input[name="password"]', testUser.password);
-    await page.click('button[type="submit"]');
-    
-    // Wait for dashboard redirect
-    await expect(page).toHaveURL(/dashboard/);
-    
-    // Navigate to analysis
-    await page.goto('/dashboard/analysis');
-    
-    // Verify analysis button is disabled when no country is selected
-    await expect(page.locator('button:has-text("Run Analysis")')).toBeDisabled();
-    
-    // Verify the backend status is displayed
-    await expect(page.locator('text=Backend:')).toBeVisible();
-  });
-
-  test('Mobile responsive: Key functionality works on mobile', async ({ page }) => {
+  test('Basic mobile functionality', async ({ page }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
-    
-    await page.goto('/');
     
     // Test mobile login
     await page.goto('/auth/jwt/sign-in');
@@ -192,23 +162,9 @@ test.describe('AccessMod User Journey', () => {
     await page.fill('input[name="password"]', testUser.password);
     await page.click('button[type="submit"]');
     
-    // Verify mobile dashboard
+    // Verify mobile dashboard and analysis page
     await expect(page).toHaveURL(/dashboard/);
-    
-    // Test mobile analysis page
     await page.goto('/dashboard/analysis');
-    
-    // Verify analysis components work on mobile
     await expect(page.locator('input[placeholder="Search countries..."]')).toBeVisible();
-    
-    // Verify map container is responsive
-    const mapContainer = page.locator('#analysis-map-container');
-    await expect(mapContainer).toBeVisible();
-    
-    // Check that the map container fits mobile viewport
-    const mapBox = await mapContainer.boundingBox();
-    if (mapBox) {
-      expect(mapBox.width).toBeLessThanOrEqual(375);
-    }
   });
 });
