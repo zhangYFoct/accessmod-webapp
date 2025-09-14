@@ -55,6 +55,7 @@ AccessMod enables healthcare planners to analyze population access to health fac
 4. **Configure Google Earth Engine**
    - Place your service account key at `backend/service-account-key.json`
    - Ensure GEE access is enabled for your account
+   - **Note**: The service account key is protected by `.gitignore` and will not be included in version control
 
 5. **Start with Docker**
    ```bash
@@ -111,3 +112,12 @@ npm run test:integration  # Integration tests
 - **Road Networks**: GRIP4 (Global Roads Inventory Project) OpenStreetMap data
 - **Land Cover**: ESA WorldCover v100 for friction surface modeling
 - **Elevation Data**: USGS SRTM GL1 30m for slope calculations
+
+## Security
+
+This repository implements security best practices:
+
+- **Service Account Protection**: Google Earth Engine service account keys are protected by `.gitignore` and excluded from version control
+- **Environment Variables**: Sensitive configuration is managed through environment variables
+- **Authentication**: JWT-based authentication for secure API access
+- **Input Validation**: All user inputs are validated using Pydantic models and Zod schemas
