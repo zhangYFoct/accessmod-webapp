@@ -96,7 +96,7 @@ export class IFRCService {
       
       const response = await this.apiClient.get('/v2/public-local-units/', {
         params: {
-          limit: 50000,  // 增加到50000，应该能覆盖全球数据
+          limit: 50000,  // Increased to 50000 to cover global data
           validated: true
         }
       });
