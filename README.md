@@ -1,4 +1,4 @@
-# AccessMod - Healthcare Accessibility Analysis Platform
+# Healthcare Accessibility Analysis Platform
 
 A comprehensive web application for analyzing healthcare accessibility using geospatial data and Google Earth Engine integration. Built for healthcare planning and accessibility analysis in resource-constrained settings.
 
