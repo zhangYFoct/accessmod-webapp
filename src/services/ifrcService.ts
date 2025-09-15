@@ -55,7 +55,7 @@ export class IFRCService {
   constructor() {
     this.apiClient = axios.create({
       baseURL: 'https://goadmin.ifrc.org/api',
-      timeout: 30000,
+      timeout: 120000, // Increased to 2 minutes for loading 50k global facilities
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

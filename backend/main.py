@@ -629,6 +629,79 @@ async def get_analysis_detail(analysis_id: int, db: AsyncSession = Depends(get_d
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# IFRC API Proxy endpoints to avoid CORS issues
+@app.get("/api/ifrc/countries")
+async def get_ifrc_countries():
+    """Get countries with IFRC facilities via backend proxy"""
+    try:
+        ifrc_api = IFRCDataAPI()
+        countries, facilities_by_country = ifrc_api.get_countries_with_facilities()
+        
+        # Convert to list format expected by frontend
+        countries_list = [
+            {
+                "name": country_name,
+                "iso": country_data.get("iso", ""),
+                "iso3": country_data.get("iso3", ""),
+                "facility_count": len(facilities_by_country.get(country_name, []))
+            }
+            for country_name, country_data in countries.items()
+            if country_name in facilities_by_country
+        ]
+        
+        return {
+            "success": True,
+            "countries": countries_list,
+            "total_countries": len(countries_list)
+        }
+        
+    except Exception as e:
+        print(f"IFRC countries error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch IFRC countries: {str(e)}")
+
+@app.get("/api/ifrc/facilities/{country_name}")
+async def get_ifrc_facilities_by_country(country_name: str):
+    """Get IFRC facilities for a specific country via backend proxy"""
+    try:
+        ifrc_api = IFRCDataAPI()
+        countries, facilities_by_country = ifrc_api.get_countries_with_facilities()
+        
+        facilities = facilities_by_country.get(country_name, [])
+        
+        return {
+            "success": True,
+            "country_name": country_name,
+            "facilities": facilities,
+            "total_facilities": len(facilities)
+        }
+        
+    except Exception as e:
+        print(f"IFRC facilities error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch IFRC facilities: {str(e)}")
+
+@app.get("/api/ifrc/facilities")
+async def get_all_ifrc_facilities():
+    """Get all IFRC facilities via backend proxy"""
+    try:
+        ifrc_api = IFRCDataAPI()
+        countries, facilities_by_country = ifrc_api.get_countries_with_facilities()
+        
+        # Flatten all facilities
+        all_facilities = []
+        for country_facilities in facilities_by_country.values():
+            all_facilities.extend(country_facilities)
+        
+        return {
+            "success": True,
+            "facilities": all_facilities,
+            "total_facilities": len(all_facilities),
+            "countries_count": len(facilities_by_country)
+        }
+        
+    except Exception as e:
+        print(f"IFRC all facilities error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch IFRC facilities: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=5000)

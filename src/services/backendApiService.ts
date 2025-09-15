@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { CONFIG } from 'src/global-config';
 
 // Create a separate axios instance for backend API
 const backendAxios = axios.create({
-  baseURL: 'http://localhost:5000',
-  timeout: 120000, // Increased to 2 minutes as GEE analysis may take longer
+  baseURL: CONFIG.serverUrl || '', // Empty for production (uses Next.js proxy), direct URL for development
+  timeout: 600000, // Increased to 10 minutes as GEE analysis may take longer
 });
 
 // Add request interceptor to include auth token
